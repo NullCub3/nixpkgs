@@ -1,35 +1,35 @@
 {
   fetchFromGitHub,
   lib,
+  bash,
+  lemurs,
   linux-pam,
   rustPlatform,
+  systemdMinimal,
   testers,
-  lemurs,
 }:
-rustPlatform.buildRustPackage rec {
+rustPlatform.buildRustPackage {
   pname = "lemurs";
-  version = "0.3.2";
+  version = "0.3.2-unstable-2024-07-24";
 
   src = fetchFromGitHub {
     owner = "coastalwhite";
     repo = "lemurs";
-    rev = "v${version}";
-    hash = "sha256-YDopY+wdWlVL2X+/wc1tLSSqFclAkt++JXMK3VodD4s=";
+    rev = "1d4be7d0c3f528a0c1e9326ac77f1e8a17161c83";
+    hash = "sha256-t/riJpgy0bD5CU8Zkzket4Gks2JXXSLRreMlrxlok0c=";
   };
 
-  patches = [
-    # part of https://github.com/coastalwhite/lemurs/commit/09003a830400250ec7745939399fc942c505e6c6, but including the rest of the commit may be breaking
-    ./0001-fix-static-lifetime-string.patch
-  ];
-
-  cargoHash = "sha256-uuHPJe+1VsnLRGbHtgTMrib6Tk359cwTDVfvtHnDToo=";
+  cargoHash = "sha256-iQ46b0EzhHBm10IHQ5SYPJKKiySj0Q1j+91UoswAX/c=";
 
   buildInputs = [
+    bash
     linux-pam
+    systemdMinimal
   ];
 
   passthru.tests.version = testers.testVersion {
     package = lemurs;
+    version = "0.3.2";
   };
 
   meta = with lib; {
@@ -39,7 +39,10 @@ rustPlatform.buildRustPackage rec {
       asl20
       mit
     ];
-    maintainers = with maintainers; [ jeremiahs ];
+    maintainers = with maintainers; [
+      jeremiahs
+      nullcube
+    ];
     mainProgram = "lemurs";
   };
 }
